@@ -188,6 +188,7 @@ mender_api_perform_authentication(mender_err_t (*get_identity)(mender_identity_t
         mender_log_error("Unable to perform HTTP request");
         goto END;
     }
+    mender_log_debug("Authentication HTTP done, status: %d", status);
 
     /* Treatment depending of the status */
     if (200 == status) {
@@ -348,6 +349,7 @@ mender_api_check_for_deployment(mender_api_deployment_data_t *deployment) {
     int          status   = 0;
 
     if (MENDER_FAIL == (ret = api_check_for_deployment_v2(&status, (void *)&response))) {
+        mender_log_error("v2 deployment check failed");
         goto END;
     }
 
@@ -669,6 +671,7 @@ mender_api_http_text_callback(mender_http_client_event_t event, void *data, size
     switch (event) {
         case MENDER_HTTP_EVENT_CONNECTED:
             /* Nothing to do */
+            mender_log_debug("HTTP connected");
             break;
         case MENDER_HTTP_EVENT_DATA_RECEIVED:
             /* Check input data */

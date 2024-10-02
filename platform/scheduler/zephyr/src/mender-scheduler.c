@@ -23,7 +23,6 @@
 #endif /* CONFIG_MENDER_CLIENT_INVENTORY */
 
 #include <zephyr/kernel.h>
-#include "mender-log.h"
 #include "mender-scheduler.h"
 #include "mender-utils.h"
 
@@ -42,9 +41,7 @@ mender_work_function(struct k_work *work) {
 
     assert(NULL != user_function);
 
-    mender_log_debug("Inside work function");
     mender_err_t status = (*user_function)();
-    mender_log_debug("Executed work function [%d]", status);
 
     k_work_reschedule(&mender_work_handle, K_SECONDS(user_interval));
 }
@@ -60,7 +57,6 @@ mender_scheduler_alt_work_create(mender_scheduler_alt_work_function_t func, int3
     user_function = func;
     user_interval = interval;
 
-    mender_log_debug("Entering activate function; here the magic begins!");
     k_work_init_delayable(&mender_work_handle, mender_work_function);
 
     return MENDER_OK;
@@ -154,7 +150,6 @@ mender_scheduler_work_create(mender_scheduler_work_params_t *work_params, void *
     /* Create work context */
     mender_scheduler_work_context_t *work_context = (mender_scheduler_work_context_t *)malloc(sizeof(mender_scheduler_work_context_t));
     if (NULL == work_context) {
-        mender_log_error("Unable to allocate memory");
         goto FAIL;
     }
     memset(work_context, 0, sizeof(mender_scheduler_work_context_t));
@@ -163,13 +158,11 @@ mender_scheduler_work_create(mender_scheduler_work_params_t *work_params, void *
     work_context->params.function = work_params->function;
     work_context->params.period   = work_params->period;
     if (NULL == (work_context->params.name = strdup(work_params->name))) {
-        mender_log_error("Unable to allocate memory");
         goto FAIL;
     }
 
     /* Create semaphore used to protect work function */
     if (0 != k_sem_init(&work_context->sem_handle, 0, 1)) {
-        mender_log_error("Unable to create semaphore");
         goto FAIL;
     }
 
@@ -269,7 +262,6 @@ mender_scheduler_work_deactivate(void *handle) {
 
         /* Wait if the work is pending or executing */
         if (0 != k_sem_take(&work_context->sem_handle, K_FOREVER)) {
-            mender_log_error("Work '%s' is pending or executing", work_context->params.name);
             return MENDER_FAIL;
         }
 
@@ -365,13 +357,11 @@ mender_scheduler_timer_callback(struct k_timer *handle) {
 
     /* Exit if the work is already pending or executing */
     if (0 != k_sem_take(&work_context->sem_handle, K_NO_WAIT)) {
-        mender_log_debug("Work '%s' is not activated, already pending or executing", work_context->params.name);
         return;
     }
 
     /* Submit the work to the work queue */
     if (k_work_submit_to_queue(&mender_scheduler_work_queue_handle, &work_context->work_handle) < 0) {
-        mender_log_warning("Unable to submit work '%s' to the work queue", work_context->params.name);
         k_sem_give(&work_context->sem_handle);
     }
 }

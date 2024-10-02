@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(mender, CONFIG_MENDER_LOG_LEVEL);
-
 #include "mender-log.h"
+
+#define LOG_MESSAGE_MAX_SIZE_BYTES 256
 
 mender_err_t
 mender_log_init(void) {
@@ -28,10 +27,6 @@ mender_log_init(void) {
     /* Nothing to do */
     return MENDER_OK;
 }
-
-/* IMPORTANT: Please note that the default size of internal Zephyr logger buffer is 1024 bytes; if we need log buffer size 
-              to be more than that there is CONFIG_LOG_BUFFER_SIZE option allowing to extend the buffer size. */
-#define LOG_MESSAGE_MAX_SIZE_BYTES (128)
 
 mender_err_t
 mender_log_print(uint8_t level, const char *filename, const char *function, int line, char *format, ...) {
@@ -47,7 +42,7 @@ mender_log_print(uint8_t level, const char *filename, const char *function, int 
     va_end(args);
 
     if (ret < 0) {
-        LOG_ERR("logger error: log message formatting failed: %d", ret);
+        printf("error: logger error: log message formatting failed: %d", ret);
         return MENDER_FAIL;
     } else if (ret >= LOG_MESSAGE_MAX_SIZE_BYTES) {
         /* Log message is too long; add ... at the end */
@@ -57,16 +52,16 @@ mender_log_print(uint8_t level, const char *filename, const char *function, int 
     /* Switch depending log level */
     switch (level) {
         case MENDER_LOG_LEVEL_ERR:
-            LOG_ERR("%s", log_buff);
+            printf("error: %s\n", log_buff);
             break;
         case MENDER_LOG_LEVEL_WRN:
-            LOG_WRN("%s", log_buff);
+            printf("warning: %s\n", log_buff);
             break;
         case MENDER_LOG_LEVEL_INF:
-            LOG_INF("%s", log_buff);
+            printf("info: %s\n", log_buff);
             break;
         case MENDER_LOG_LEVEL_DBG:
-            LOG_DBG("%s (%d): %s", function, line, log_buff);
+            printf("debug [%s (%d)]: %s\n", function, line, log_buff);
             break;
         default:
             break;

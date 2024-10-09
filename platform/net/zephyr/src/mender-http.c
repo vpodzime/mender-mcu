@@ -291,17 +291,20 @@ mender_http_artifact_download(char *path, int *status) {
     request.header_fields = header_fields;
 
     /* Connect to the server */
+    mender_log_debug("Connecting to %s:%s", host, port);
     sock = mender_net_connect(host, port);
     if (sock < 0) {
         mender_log_error("Unable to open HTTP client connection");
         goto END;
     }
+    mender_log_debug("Connected");
     if (MENDER_OK != (ret = mender_api_http_artifact_callback(MENDER_HTTP_EVENT_CONNECTED, NULL, 0))) {
         mender_log_error("An error occurred while calling 'MENDER_HTTP_EVENT_CONNECTED' artifact callback");
         goto END;
     }
 
     /* Perform HTTP request */
+    mender_log_debug("Starting HTTP artifact download request");
     if ((http_req_ret = http_client_req(sock, &request, MENDER_HTTP_REQUEST_TIMEOUT, &request_ret)) < 0) {
         mender_log_error("HTTP request failed: %s", strerror(-http_req_ret));
         goto END;
@@ -384,12 +387,17 @@ artifact_response_cb(struct http_response *response, MENDER_ARG_UNUSED enum http
     mender_err_t *request_ret = user_data;
 
     /* Check if data is available */
+    mender_log_debug("Handling artifact response");
+    k_msleep(100);
     if (response->body_found && (NULL != response->body_frag_start) && (0 != response->body_frag_len) && (MENDER_OK == (*request_ret))) {
         /* Transmit data received to the upper layer */
+        mender_log_debug("Calling artifact callback");
         *request_ret = mender_api_http_artifact_callback(MENDER_HTTP_EVENT_DATA_RECEIVED, (void *)response->body_frag_start, response->body_frag_len);
         if (MENDER_OK != (*request_ret)) {
             mender_log_error("An error occurred, stop reading data");
         }
+    } else {
+        mender_log_debug("Not calling artifact callback");
     }
 }
 

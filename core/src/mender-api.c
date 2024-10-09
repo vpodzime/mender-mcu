@@ -513,6 +513,7 @@ mender_api_download_artifact(char *uri) {
     int          status = 0;
 
     /* Perform HTTP request */
+    mender_log_debug("Starting HTTP artifact download");
     if (MENDER_OK != (ret = mender_http_artifact_download(uri, &status))) {
         mender_log_error("Unable to perform HTTP request");
         goto END;
@@ -700,6 +701,8 @@ mender_api_http_artifact_callback(mender_http_client_event_t event, void *data, 
 
     mender_artifact_ctx_t *mender_artifact_ctx = NULL;
 
+    mender_log_debug("Artifact callback");
+
     /* Treatment depending of the event */
     switch (event) {
         case MENDER_HTTP_EVENT_CONNECTED:
@@ -727,6 +730,7 @@ mender_api_http_artifact_callback(mender_http_client_event_t event, void *data, 
             assert(NULL != mender_artifact_ctx);
 
             /* Parse input data */
+            mender_log_debug("Processing artifact data");
             if (MENDER_OK != (ret = mender_artifact_process_data(mender_artifact_ctx, data, data_length))) {
                 mender_log_error("Unable to process data");
                 break;

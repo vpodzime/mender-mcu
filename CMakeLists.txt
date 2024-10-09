@@ -172,6 +172,7 @@ endif()
 file(GLOB SOURCES_TEMP
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-api.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-artifact.c"
+    "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-artifact-download.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-client.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-utils.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-update-module.c"

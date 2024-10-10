@@ -33,7 +33,9 @@
 /**
  * @brief Receive buffer length
  */
-#define MENDER_HTTP_RECV_BUF_LENGTH (512)
+#define MENDER_HTTP_RECV_BUF_LENGTH (2048)
+
+static uint8_t receive_buf[MENDER_HTTP_RECV_BUF_LENGTH];
 
 /**
  * @brief Request timeout (milliseconds)
@@ -140,10 +142,11 @@ mender_http_perform(char                *jwt,
     request.payload     = payload;
     request.payload_len = (NULL != payload) ? strlen(payload) : 0;
     request.response    = mender_http_response_cb;
-    if (NULL == (request.recv_buf = (uint8_t *)malloc(MENDER_HTTP_RECV_BUF_LENGTH))) {
-        mender_log_error("Unable to allocate memory");
-        goto END;
-    }
+    /* if (NULL == (request.recv_buf = (uint8_t *)malloc(MENDER_HTTP_RECV_BUF_LENGTH))) { */
+    /*     mender_log_error("Unable to allocate memory"); */
+    /*     goto END; */
+    /* } */
+    request.recv_buf     = receive_buf;
     request.recv_buf_len = MENDER_HTTP_RECV_BUF_LENGTH;
 
     /* Add headers */
@@ -235,7 +238,7 @@ END:
     free(auth_header);
     free(signature_header);
 
-    free(request.recv_buf);
+    /* free(request.recv_buf); */
 
     return ret;
 }

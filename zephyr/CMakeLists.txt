@@ -23,6 +23,7 @@ if(CONFIG_MENDER_MCU_CLIENT)
         "${CMAKE_CURRENT_LIST_DIR}/../core/src/mender-client.c"
         "${CMAKE_CURRENT_LIST_DIR}/../core/src/mender-utils.c"
         "${CMAKE_CURRENT_LIST_DIR}/../core/src/mender-deployment-data.c"
+        "${CMAKE_CURRENT_LIST_DIR}/../core/src/mender-update-module.c"
         "${CMAKE_CURRENT_LIST_DIR}/../platform/log/${CONFIG_MENDER_PLATFORM_LOG_TYPE}/src/mender-log.c"
         "${CMAKE_CURRENT_LIST_DIR}/../platform/net/${CONFIG_MENDER_PLATFORM_NET_TYPE}/src/mender-http.c"
         "${CMAKE_CURRENT_LIST_DIR}/../platform/net/${CONFIG_MENDER_PLATFORM_NET_TYPE}/src/mender-net.c"

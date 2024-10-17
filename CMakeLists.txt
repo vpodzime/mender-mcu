@@ -174,6 +174,7 @@ file(GLOB SOURCES_TEMP
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-artifact.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-client.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-utils.c"
+    "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-update-module.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-zephyr-image-update-module.c"
     "${CMAKE_CURRENT_LIST_DIR}/core/src/mender-deployment-data.c"
     "${CMAKE_CURRENT_LIST_DIR}/platform/flash/${CONFIG_MENDER_PLATFORM_FLASH_TYPE}/src/mender-flash.c"

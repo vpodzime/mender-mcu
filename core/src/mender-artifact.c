@@ -309,6 +309,8 @@ mender_artifact_process_data(mender_artifact_ctx_t *ctx, void *input_data, size_
     size_t       new_size;
     size_t       expected_required;
 
+    mender_log_debug("Processing raw artifact data");
+
     /* Copy data to the end of the internal buffer */
     if ((NULL != input_data) && (0 != input_length)) {
         if ((ctx->input.length + input_length) > ctx->input.size) {

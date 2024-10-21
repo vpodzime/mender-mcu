@@ -299,6 +299,7 @@ mender_http_artifact_download(char *uri, mender_artifact_download_data_t *dl_dat
     }
 
     /* Perform HTTP request */
+    mender_log_debug("Starting HTTP request");
     if ((http_req_ret = http_client_req(sock, &request, MENDER_HTTP_REQUEST_TIMEOUT, dl_data)) < 0) {
         mender_log_error("HTTP request failed: %s", strerror(-http_req_ret));
         goto END;
@@ -383,6 +384,7 @@ artifact_response_cb(struct http_response *response, MENDER_ARG_UNUSED enum http
     /* Check if data is available */
     if (response->body_found && (NULL != response->body_frag_start) && (0 != response->body_frag_len) && (MENDER_OK == (dl_data->ret))) {
         /* Transmit data received to the upper layer */
+        mender_log_debug("Calling download callback");
         dl_data->ret
             = dl_data->artifact_download_callback(MENDER_HTTP_EVENT_DATA_RECEIVED, (void *)response->body_frag_start, response->body_frag_len, dl_data);
         if (MENDER_OK != (dl_data->ret)) {

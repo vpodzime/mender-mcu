@@ -21,6 +21,7 @@
 #include <string.h> /* memset() */
 
 #include "alloc.h"
+#include "log.h"
 
 static MenderAllocator   malloc_fn  = NULL;
 static MenderReallocator realloc_fn = NULL;
@@ -35,10 +36,15 @@ mender_set_allocation_funcs(MenderAllocator malloc_func, MenderReallocator reall
 
 void *
 mender_malloc(size_t size) {
+    void *ret;
     if (NULL == malloc_fn) {
-        return malloc(size);
+        ret = malloc(size);
+        mender_log_debug("A %5zd %p", size, ret);
+        return ret;
     }
-    return malloc_fn(size);
+    ret = malloc_fn(size);
+    mender_log_debug("A %5zd %p", size, ret);
+    return ret;
 }
 
 void *
@@ -52,17 +58,27 @@ mender_calloc(size_t n, size_t size) {
 
 void *
 mender_realloc(void *ptr, size_t size) {
-    if (NULL == realloc_fn) {
-        return realloc(ptr, size);
+    void *ret;
+    if (NULL == ptr) {
+        return mender_malloc(size);
     }
-    return realloc_fn(ptr, size);
+    if (NULL == realloc_fn) {
+        ret = realloc(ptr, size);
+        mender_log_debug("R %p %5zd %p", ptr, size, ret);
+        return ret;
+    }
+    ret = realloc_fn(ptr, size);
+    mender_log_debug("R %p %5zd %p", ptr, size, ret);
+    return ret;
 }
 
 void
 mender_free(void *ptr) {
     if (NULL == free_fn) {
         free(ptr);
+        mender_log_debug("F %p", ptr);
         return;
     }
     free_fn(ptr);
+    mender_log_debug("F %p", ptr);
 }

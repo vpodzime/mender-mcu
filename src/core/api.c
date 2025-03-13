@@ -219,6 +219,8 @@ perform_authentication(void) {
         goto END;
     }
 
+    /* strcpy(signature, "broken-signature"); */
+
     /* Perform HTTP request */
     if (MENDER_OK
         != (ret = mender_http_perform(NULL,

@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+#include <zephyr/sys/reboot.h>
+
 #include "alloc.h"
 #include "api.h"
 #include "client.h"
@@ -932,6 +934,8 @@ set_and_store_state(const mender_update_state_t state) {
 static mender_err_t
 mender_client_update_work_function(void) {
     mender_err_t ret = MENDER_OK;
+
+    /* sys_reboot(SYS_REBOOT_WARM); */
 
     /* Ensure that the context is initialized to NULL before goto END */
     mender_artifact_ctx_t *mender_artifact_ctx = NULL;

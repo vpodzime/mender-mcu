@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+#include <zephyr/kernel.h>
+
 #include "client.h"
 #include "flash.h"
 #include "log.h"

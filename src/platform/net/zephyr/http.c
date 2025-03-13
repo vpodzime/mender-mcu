@@ -21,6 +21,7 @@
 #include <version.h>
 #include <zephyr/net/http/client.h>
 #include <zephyr/kernel.h>
+#include <zephyr/sys/reboot.h>
 #include "api.h"
 #include "http.h"
 #include "log.h"
@@ -109,6 +110,9 @@ mender_http_perform(char                *jwt,
     assert(NULL != path);
     assert(NULL != callback);
     assert(NULL != status);
+
+    /* sys_reboot(SYS_REBOOT_WARM); */
+
     mender_err_t                ret                = MENDER_FAIL;
     struct http_request         request            = { 0 };
     mender_http_request_context request_context    = { .callback = callback, .params = params, .ret = MENDER_OK };

@@ -82,6 +82,37 @@ mender_err_t mender_storage_get_deployment_data(char **deployment_data);
  */
 mender_err_t mender_storage_delete_deployment_data(void);
 
+#ifdef CONFIG_MENDER_DEPLOYMENT_LOGS
+/**
+ * @brief Append a deployment log message
+ * @param msg Message to append
+ * @return MENDER_OK if the function succeeds, error code otherwise
+ */
+mender_err_t mender_storage_deployment_log_append(const char *msg);
+
+/**
+ * @brief Visitor function for deployment log messages
+ * @param msg Deployment log message
+ * @param ctx Arbitrary context data
+ * @return MENDER_OK if the function succeeds, error code otherwise
+ */
+typedef void(MenderDeploymentLogVisitor)(const char *msg, void *ctx);
+
+/**
+ * @brief Walk/iterate over stored deployment log messages
+ * @param visitor_fn Function to call on every stored log message
+ * @param ctx Arbitrary context data passed to #visitor_fn
+ * @return MENDER_OK if the function succeeds, error code otherwise
+ */
+mender_err_t mender_storage_deployment_log_walk(MenderDeploymentLogVisitor visitor_fn, void *ctx);
+
+/**
+ * @brief Clear the deployment logs storage
+ * @return MENDER_OK if the function succeeds, error code otherwise
+ */
+mender_err_t mender_storage_deployment_log_clear(void);
+#endif /* CONFIG_MENDER_DEPLOYMENT_LOGS */
+
 #ifdef CONFIG_MENDER_FULL_PARSE_ARTIFACT
 #ifdef CONFIG_MENDER_PROVIDES_DEPENDS
 /**

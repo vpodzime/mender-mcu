@@ -256,6 +256,7 @@ mender_zephyr_image_download_artifact_flash_callback(MENDER_NDEBUG_UNUSED mender
                 mender_log_error("Unable to close flash handle");
                 goto END;
             }
+            return MENDER_FAIL;
         }
     }
 
@@ -268,6 +269,7 @@ END:
 static mender_err_t
 mender_zephyr_image_set_pending_image(MENDER_NDEBUG_UNUSED mender_update_state_t state, MENDER_ARG_UNUSED mender_update_state_data_t callback_data) {
     assert(MENDER_UPDATE_STATE_INSTALL == state);
+
     mender_err_t ret;
 
     if (!artifact_had_payload) {

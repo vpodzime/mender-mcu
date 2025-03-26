@@ -535,6 +535,7 @@ mender_artifact_compact_ctx(mender_artifact_ctx_t *ctx) {
     if (NULL == ctx) {
         return;
     }
+    mender_log_info("Compacting artifact context");
     FREE_AND_NULL(ctx->input.data);
     ctx->input.length = 0;
     ctx->input.size   = 0;

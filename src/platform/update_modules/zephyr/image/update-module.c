@@ -251,6 +251,7 @@ mender_zephyr_image_download_artifact_flash_callback(MENDER_NDEBUG_UNUSED mender
 
         /* Check if the flash handle must be closed */
         if (dl_data->offset + dl_data->length >= dl_data->size) {
+            return MENDER_FAIL;
             /* Close the flash handle */
             if (MENDER_OK != (ret = mender_flash_close(mcu_boot_flash_handle))) {
                 mender_log_error("Unable to close flash handle");

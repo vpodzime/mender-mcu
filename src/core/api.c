@@ -332,6 +332,7 @@ authenticated_http_perform(char *path, mender_http_method_t method, char *payloa
     do {
         ret = mender_http_perform(api_jwt, path, method, payload, signature, &mender_api_http_text_callback, response, status);
         if (MENDER_RETRY_ERROR == ret) {
+            mender_log_warning("Network issue, retrying in %"PRIu16"ms", retry_interval);
             mender_os_sleep(retry_interval);
             retry_interval = retry_interval * HTTP_RETRY_INTERVAL_FACTOR;
             remaining_attempts--;
